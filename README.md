@@ -1,2 +1,1 @@
-# Obstacle-Detection-Robot
-Raspberry Pi Zero robot with an obstacle detector and real-time system.
+# Real-Time System Robot with Obstacle Detection Sensor
