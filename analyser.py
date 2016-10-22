@@ -2,6 +2,8 @@ import motorsAPI
 import timeit
 import sys
 
+text_file = open("Output.txt", "w")
+
 def analyse(input, speed, sensorReader):
 	start_time = timeit.default_timer()
 
@@ -19,7 +21,7 @@ def analyse(input, speed, sensorReader):
 			print ("DOWN")
 
 	elapsed = timeit.default_timer() - start_time
-	print elapsed
+	text_file.write("{}\n".format(elapsed*1000))
 
 
 #Beginning ET test
@@ -32,4 +34,5 @@ def main():
 
 
 if __name__ == "__main__":
-	main()
+	while True:
+		main()
