@@ -2,6 +2,6 @@ import motorsAPI
 
 def main():
 	while True:
-		print ("running")
-		turnLeft(60)
+		direction = raw_input("Where to go?")
+		motorsAPI.main(direction)
 

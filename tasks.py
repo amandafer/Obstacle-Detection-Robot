@@ -1,6 +1,6 @@
-#import RM.py
+import RM.py
 import explorerhat
-from enum import Enum
+#from enum import Enum
 
 #Reads the sensor and puts the value at hasDetectedObj
 class  SensorTask(TaskType):
