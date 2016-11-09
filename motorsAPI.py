@@ -30,7 +30,7 @@ def reverse(speed):
 
 
 def stopMotors():
-	time.sleep(0.2)
+	time.sleep(0.03)
         explorerhat.motor.stop()
 
 
