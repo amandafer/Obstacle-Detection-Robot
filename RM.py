@@ -1,13 +1,13 @@
 import string
 import random
 import fractions
-import tasks.py
+from tasks import *
 
 #Global variables
 hasDetectedObj = 0
 inputDirection = "up"
 canMoveToDir = inputDirection
-speed = 60
+speed = 100
 
 def _lcm(a,b): return abs(a * b) / fractions.gcd(a,b) if a and b else 0
 
@@ -35,32 +35,16 @@ def tasktype_cmp(self, other):
 
 if __name__ == '__main__':
     #Variables
-    html_color = { 'Task1':'white', 'Task2':'white', 'Task3':'white', 'Task4':'white', 'Task5':'white', 'Empty':'grey', 'Finish':'black'}
-    #taskfile = open('tasks.txt')
-    #lines = taskfile.readlines()
-    sensor = SensorTask(30, 0, 10, 30, "sensor")
-    input_ = InputTask(40, 0, 10, 40, "input_")
-    analyser = AnalyserTask(40, 0, 8, 30, "analyser")
-    motor = MotorTask(60, 0, 4, 60, "motor")
-    reporter = ReporterTask(120, 0, 6, 120, "reporter")
+    sensor = SensorTask(6, 0, 1, 6, "sensor")
+    input_ = InputTask(8, 0, 2, 8, "input_")
+    analyser = AnalyserTask(8, 0, 1, 8, "analyser")
+    motor = MotorTask(12, 0, 2, 12, "motor")
+    reporter = ReporterTask(24, 0, 1, 24, "reporter")
 
     task_types = [sensor, input_, analyser, motor, reporter]
     tasks = []
     hyperperiod = []
 
-    #Allocate task types
-    #for line in lines:
-    #    line = line.split(' ')
-    #    for i in range (0,4):
-    #        line[i] = int(line[i])
-    #    if len(line) == 5:
-    #        name = line[4]
-    #    elif len(line) == 4:
-    #        name = 'Task'
-    #    else:
-    #        raise Exception('Invalid tasks.txt file structure')
-    #    if int(line[0])>0:
-    #        task_types.append(TaskType(period=line[0], release=line[1], execution=line[2], deadline=line[3], name=name))
 
     #Calculate hyperperiod
     for task_type in task_types:
@@ -80,8 +64,6 @@ if __name__ == '__main__':
                 priority = task_type.period
                 tasks.append(TaskIns(start=start, end=end, priority=priority, name=task_type.name))
 
-    #Html output start
-    html = "<!DOCTYPE html><html><head><title>RM Scheduling</title></head><body>"
 
     #Check utilization
     utilization = 0
@@ -89,7 +71,7 @@ if __name__ == '__main__':
         utilization += float(task_type.execution) / float(task_type.period)
     if utilization > 1:
         print 'Utilization error!'
-        html += '<br /><br />Utilization error!<br /><br />'
+
 
     #Simulate clock
     clock_step = 1
@@ -105,24 +87,20 @@ if __name__ == '__main__':
         if len(possible) > 0:
             on_cpu = possible[0]
             print on_cpu.get_unique_name() , " uses the processor. " ,
-            html += '<div style="float: left; text-align: center; width: 110px; height: 20px; background-color:' + html_color[on_cpu.name] + ';">' + on_cpu.get_unique_name() + '</div>'
-            if on_cpu.use(clock_step):
+            for task in task_types:
+		task_name = on_cpu.get_unique_name();
+		if task.name in task_name:
+		   task.task()
+
+	    if on_cpu.use(clock_step):
                 tasks.remove(on_cpu)
-                html += '<div style="float: left; text-align: center; width: 10px; height: 20px; background-color:' + html_color['Finish'] + ';"></div>'
                 print "Finish!" ,
-        else:
+        	#raw_input()
+	else:
             print 'No task uses the processor. '
-            html += '<div style="float: left; text-align: center; width: 110px; height: 20px; background-color:' + html_color['Empty'] + ';">Empty</div>'
         print "\n"
 
     #Print remaining periodic tasks
-    html += "<br /><br />"
     for p in tasks:
         print p.get_unique_name() + " is dropped due to overload!"
-        html += "<p>" + p.get_unique_name() + " is dropped due to overload!</p>"
 
-    #Html output end
-    html += "</body></html>"
-    output = open('output.html', 'w')
-    output.write(html)
-    output.close()

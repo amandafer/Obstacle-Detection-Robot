@@ -1,6 +1,6 @@
-import RM.py
 import explorerhat
-#from enum import Enum
+import random
+import time
 
 #A task instance
 class TaskIns(object):
@@ -39,60 +39,70 @@ class TaskType(object):
         self.deadline  = deadline
         self.name      = name
 
+
 #Reads the sensor and puts the value at hasDetectedObj
 class  SensorTask(TaskType):
-    def readSensor():
-        hasDetectedObj = explorerhat.input.one.read()
+    def task(self):
+        global hasDetectedObj 
+	hasDetectedObj = explorerhat.input.one.read()
+	print hasDetectedObj
 
 #Reads the input from frontend
 class  InputTask(TaskType):
-    def readInput():
-        inputDirection = sys.read[0]
+    def task(self):
+        global inputDirection 
+	inputDirection = "up"
+	global speed
+	speed = 100
 
 
 class  MotorTask(TaskType):
-    def turnLeft(speed):
+    def turnLeft(self):
         explorerhat.motor.one.forwards(speed)
         explorerhat.motor.two.backwards(speed)
-        stopMotors()
+        self.stopMotors()
 
-    def turnRight(speed):
+    def turnRight(self):
         explorerhat.motor.one.backwards(speed)
         explorerhat.motor.two.forwards(speed)
-        stopMotors()
+        self.stopMotors()
 
-    def accelerate(speed):
-        explorerhat.motor.one.forwards(speed)
-        explorerhat.motor.two.forwards(speed)
-        stopMotors()
+    def accelerate(self):
+        explorerhat.motor.one.forwards(100)
+        explorerhat.motor.two.forwards(100)
+        self.stopMotors()
 
-    def reverse(speed):
+    def reverse(self):
         explorerhat.motor.one.backwards(speed)
         explorerhat.motor.two.backwards(speed)
-        stopMotors()
+        self.stopMotors()
 
-    def stopMotors():
+    def stopMotors(self):
         time.sleep(0.2)
         explorerhat.motor.stop()
 
-    dict = {"left": turnLeft, "right": turnRight, "up": accelerate, "down": reverse, "stop": stopMotors}
 
-    def switch(canMoveToDir):
-        dict[canMoveToDir]()
+    def task(self):
+	dict_ = {"left":self.turnLeft, "right":self.turnRight, "up":self.accelerate, "down":self.reverse, "stop":self.stopMotors}
+
+        dict_[canMoveToDir]()
 
 
 #Analyses both results from the sensor and the input
 class AnalyserTask(TaskType):
-    def analyse():
-        if (hasDetectedObj == 0):
-            canMoveToDir = inputDirection
+    def task(self):
+        if (hasDetectedObj == 1):
+            global canMoveToDir 
+	    canMoveToDir = inputDirection
+	    print canMoveToDir
         else:
             canMoveToDir = "stop"
+	    print canMoveToDir
 
 
 #Send to frontend the result of analyser
 class ReporterTask(TaskType):
-    def report():
+    def task(self):
         if (hasDetectedObj == 0):
             print "Has detected object!"
         else:
