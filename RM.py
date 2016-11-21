@@ -3,12 +3,6 @@ import random
 import fractions
 from tasks import *
 
-#Global variables
-hasDetectedObj = 0
-inputDirection = "up"
-canMoveToDir = inputDirection
-speed = 100
-
 def _lcm(a,b): return abs(a * b) / fractions.gcd(a,b) if a and b else 0
 
 def lcm(a):
