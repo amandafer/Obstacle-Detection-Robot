@@ -37,11 +37,11 @@ class TaskIns(object):
 
     #Default representation
     def __repr__(self):
-        return str(self.name) + "#" + str(self.id) + " - start: " + str(self.start) + " priority: " + str(self.priority)
+        return str(self.name)
 
     #Get name as Name#id
     def get_unique_name(self):
-        return str(self.name) + "#" + str(self.id)
+        return str(self.name)
 
 
 #Task types (templates for periodic tasks)
@@ -60,14 +60,13 @@ class  SensorTask(TaskType):
     def task(self):
         global hasDetectedObj 
 	hasDetectedObj = explorerhat.input.one.read()
-	print hasDetectedObj
 
 #Reads the input from frontend
 class  InputTask(TaskType):
     def task(self):
         global inputDirection 
-        #inputDirection = "up"
-
+	inputDirection = "stop"
+	global speed
         global addr
 	
         try:
@@ -77,10 +76,9 @@ class  InputTask(TaskType):
 
             inputDirection = split[0]
             speed = int(split[1])
-            print "speed: ", speed
 
         except socket.timeout:
-            print 'Timed out when reading from input.'
+            pass
 
 class  MotorTask(TaskType):
     def turnLeft(self):
@@ -94,8 +92,9 @@ class  MotorTask(TaskType):
         self.stopMotors()
 
     def accelerate(self):
-        explorerhat.motor.one.forwards(100)
-        explorerhat.motor.two.forwards(100)
+        explorerhat.motor.one.forwards(speed)
+        explorerhat.motor.two.forwards(speed)
+	#self.stopMotors()
 
     def reverse(self):
         explorerhat.motor.one.backwards(speed)
@@ -119,23 +118,19 @@ class AnalyserTask(TaskType):
         if (hasDetectedObj == 1):
             global canMoveToDir 
 	    canMoveToDir = inputDirection
-	    print canMoveToDir
         else:
             if (inputDirection == "up"):
                 canMoveToDir = "stop"
             else:
                 canMoveToDir = inputDirection
-	    print canMoveToDir
 
 
 #Send to frontend the result of analyser
 class ReporterTask(TaskType):
     def task(self):
 	if (addr == ""):
-            print "NOT SENDING SHIT"
             return
 
-        print "addr: ", addr
         if (hasDetectedObj == 1):
             sock.sendto(str(speed), (addr[0], 5005))
 

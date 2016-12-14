@@ -89,24 +89,24 @@ if __name__ == '__main__':
          #Select task with highest priority
          if len(possible) > 0:
              on_cpu = possible[0]
-             print on_cpu.get_unique_name() , " uses the processor. " ,
+             #print on_cpu.get_unique_name() , " uses the processor. " ,
              for task in task_types:
                  task_name = on_cpu.get_unique_name();
                  if task.name in task_name:
                      try:
                          task.task()
-                         print "clock: ", i
-                         print "task exec: ", task.execution
+                         #print "clock: ", i
+                         #print "task exec: ", task.execution
                          consume(hyper_iter, task.execution)
                      except TimeoutError, e:
                          print "timeout worked!"
 
              tasks.remove(on_cpu)
-             print "Finish!" ,
+             #print "Finish!" ,
              #raw_input()
          else:
-             print 'No task uses the processor. '
-         print "\n"
+             #print 'No task uses the processor. '
+	     pass
 
      #Print remaining periodic tasks
      for p in tasks:
