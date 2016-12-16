@@ -131,8 +131,9 @@ class ReporterTask(TaskType):
 	if (addr == ""):
             return
 
-        if (hasDetectedObj == 1):
-            sock.sendto(str(speed), (addr[0], 5005))
+	print ("address: ", addr)
 
-        else:
-            sock.sendto(str(speed), (addr[0], 5005))
+        if (hasDetectedObj == 0):
+            sock.sendto("Obstacle Detected!", (addr[0], 5005))
+	else:
+	    sock.sendto("BLA", (addr[0], 5005))

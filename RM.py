@@ -1,3 +1,4 @@
+import signal
 import collections
 import itertools
 import string
@@ -5,6 +6,11 @@ import random
 import fractions
 import timeout
 from tasks import *
+
+#Define timeout exception handler
+def handler(signum, frame):
+    print "Execution timed out!"
+    #raise Exception()
 
 def _lcm(a,b): return abs(a * b) / fractions.gcd(a,b) if a and b else 0
 
@@ -35,11 +41,11 @@ def tasktype_cmp(self, other):
 
 if __name__ == '__main__':
     #Variables
-    sensor = SensorTask(6, 0, 1, 6, "sensor")
-    input_ = InputTask(8, 0, 2, 8, "input_")
-    analyser = AnalyserTask(8, 0, 1, 8, "analyser")
-    motor = MotorTask(12, 0, 4, 12, "motor")
-    reporter = ReporterTask(24, 0, 1, 24, "reporter")
+    sensor = SensorTask(6, 0, 1.0, 6, "sensor")
+    input_ = InputTask(8, 0, 2.0, 8, "input_")
+    analyser = AnalyserTask(8, 0, 1.0, 8, "analyser")
+    motor = MotorTask(12, 0, 4.0, 12, "motor")
+    reporter = ReporterTask(24, 0, 1.0, 24, "reporter")
 
     task_types = [sensor, input_, analyser, motor, reporter]
     tasks = []
@@ -65,7 +71,7 @@ if __name__ == '__main__':
                  end = start + task_type.execution
                  priority = task_type.period
                  tasks.append(TaskIns(start=start, end=end, priority=priority, name=task_type.name))
-                 consume(iterator, task_type.execution)
+                 consume(iterator, int(task_type.execution))
 
      #Check util ization
      utilization = 0
@@ -94,12 +100,20 @@ if __name__ == '__main__':
                  task_name = on_cpu.get_unique_name();
                  if task.name in task_name:
                      try:
+                         timer = task.execution/100
+                         print "task: %s -- timer %.3f" % (task.name, timer)
+                         signal.signal(signal.SIGALRM, handler)
+                         signal.setitimer(signal.ITIMER_REAL, timer)
                          task.task()
                          #print "clock: ", i
                          #print "task exec: ", task.execution
-                         consume(hyper_iter, task.execution)
-                     except TimeoutError, e:
-                         print "timeout worked!"
+                     except Exception, e:
+                         pass
+                     finally:
+                         ftimer = signal.getitimer(signal.ITIMER_REAL)
+                         print "final timer: %.3f" % ftimer[0]
+                         signal.setitimer(signal.ITIMER_REAL, 0)
+                         consume(hyper_iter, int(task.execution))
 
              tasks.remove(on_cpu)
              #print "Finish!" ,
