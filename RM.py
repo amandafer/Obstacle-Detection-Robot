@@ -4,7 +4,6 @@ import itertools
 import string
 import random
 import fractions
-import timeout
 from tasks import *
 
 #Define timeout exception handler
