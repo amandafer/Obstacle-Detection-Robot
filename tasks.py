@@ -2,7 +2,6 @@ import explorerhat
 import random
 import time
 import socket
-import timeout
 
 def initializeSock():
     global sock, addr, inputDirection, speed
@@ -84,22 +83,18 @@ class  MotorTask(TaskType):
     def turnLeft(self):
         explorerhat.motor.one.forwards(speed)
         explorerhat.motor.two.backwards(speed)
-        self.stopMotors()
 
     def turnRight(self):
         explorerhat.motor.one.backwards(speed)
         explorerhat.motor.two.forwards(speed)
-        self.stopMotors()
 
     def accelerate(self):
         explorerhat.motor.one.forwards(speed)
         explorerhat.motor.two.forwards(speed)
-	#self.stopMotors()
 
     def reverse(self):
         explorerhat.motor.one.backwards(speed)
         explorerhat.motor.two.backwards(speed)
-        self.stopMotors()
 
     def stopMotors(self):
         time.sleep(0.2)
@@ -136,4 +131,4 @@ class ReporterTask(TaskType):
         if (hasDetectedObj == 0):
             sock.sendto("Obstacle Detected!", (addr[0], 5005))
 	else:
-	    sock.sendto("BLA", (addr[0], 5005))
+	    sock.sendto("", (addr[0], 5005))

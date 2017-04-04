@@ -4,13 +4,11 @@ import itertools
 import string
 import random
 import fractions
-import timeout
 from tasks import *
 
 #Define timeout exception handler
 def handler(signum, frame):
     print "Execution timed out!"
-    #raise Exception()
 
 def _lcm(a,b): return abs(a * b) / fractions.gcd(a,b) if a and b else 0
 
@@ -95,7 +93,7 @@ if __name__ == '__main__':
          #Select task with highest priority
          if len(possible) > 0:
              on_cpu = possible[0]
-             #print on_cpu.get_unique_name() , " uses the processor. " ,
+
              for task in task_types:
                  task_name = on_cpu.get_unique_name();
                  if task.name in task_name:
@@ -105,8 +103,6 @@ if __name__ == '__main__':
                          signal.signal(signal.SIGALRM, handler)
                          signal.setitimer(signal.ITIMER_REAL, timer)
                          task.task()
-                         #print "clock: ", i
-                         #print "task exec: ", task.execution
                      except Exception, e:
                          pass
                      finally:
@@ -116,10 +112,7 @@ if __name__ == '__main__':
                          consume(hyper_iter, int(task.execution))
 
              tasks.remove(on_cpu)
-             #print "Finish!" ,
-             #raw_input()
          else:
-             #print 'No task uses the processor. '
 	     pass
 
      #Print remaining periodic tasks
